@@ -7,8 +7,8 @@ import os
 import scipy
 
 # path to data folder
-path = "C:\\Users\\Ryan\\Documents\\Netsci High\\Project\\data"
-filename = "NetSci-Data-15w04e_TEMP.csv"
+path = "..\\data"
+filename = "NetSci-Data-15w04d_TEMP.csv"
 
 # if os.path.exists(path+"\\"+filename):
 csvfile = open(path+"\\"+filename)
