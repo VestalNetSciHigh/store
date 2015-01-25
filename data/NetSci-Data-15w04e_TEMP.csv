@@ -1,0 +1,5 @@
+From,Subject,Body,Date,Rank,Priority,
+test@test.com,HelloWorld,Body Words,10/10/2012,0.67,1,
+rest@test.com,ByeWorld,Body Words,10/10/2012,0.21,0,
+best@test.com,SayWorld,Body Words,10/10/2012,0.91,1,
+just@test.com,HeyWorld,Body Words,10/10/2012,0.48,0,
