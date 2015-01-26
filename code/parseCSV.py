@@ -1,9 +1,16 @@
 __author__ = 'VestalNetSciHigh'
 
-# Helpful links: StackOverFlow is life!
-# http://stackoverflow.com/questions/14683690/machine-learning-email-prioritization-python
-# http://stackoverflow.com/questions/14091387/creating-a-dictionary-from-a-csv-file
-# http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary
+#Todo_1: scikit-lean distance metric used to generate a n*n matrix (each element of the sparce_matrix against every other) (numpy format)
+
+#Todo_2: Determine the threshold for the matrix
+
+#Todo_3: Set matrix values to 0 that fall below the threshold
+
+#Todo_4: Generate a network using networkx using the matrix as the adjacency matrix (networkx takes numpy matrix format)
+#Note: labels for the nodes in the network will be lost in the above process.  You will need to keep track of the university name
+#and it's specific position in the matrix
+
+#Todo_5: Save network in a "Gephiable" data format
 
 import csv
 import os
@@ -60,12 +67,18 @@ reader = csv.DictReader(csvfile)
 # CSV to dict
 data = {}
 for row in reader:
-    key = row.pop('unitid')
+    row.pop('unitid')
+    key = row.pop('institution name')
+
+    # Break Tuition cost into categories. Intervals of 5k
+    row['blah blah tuitiion cost'] = 0.01 if row['blah blah tuitiion cost'] > 5000 else row['blah blah tuitiion cost']
+
     # duplicate row handling
     if key in data:
         print "WARNING: 'unitid' duplicate: " + key
         pass
     data[key] = row
+
 output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")
 
 # dict to "one-hot" format
@@ -73,5 +86,6 @@ vec = DictVectorizer()
 sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
 feature_names = vec.get_feature_names()
 
+
 output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)
-output(feature_names, filename=TARGET[12:]+"_features", ext=".txt")
+output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
