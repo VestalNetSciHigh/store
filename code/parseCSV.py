@@ -60,18 +60,32 @@ def output(content, filename=TARGET, ext=".txt", mode="print", charlimit=0, prin
         print content
 
 
+# def get_bins(position, width):
+#     yield position * width
+
+
 # begin program
 csvfile = open(PATH + "\\" + TARGET + ".csv")
 reader = csv.DictReader(csvfile)
 
 # CSV to dict
 data = {}
+tuition_key = 'DRVIC2013.Tuition and fees, 2013-14'  # numerical to categorical
 for row in reader:
-    row.pop('unitid')
+    row.pop('unitid')  # unnecessary unique ID
     key = row.pop('institution name')
 
-    # Break Tuition cost into categories. Intervals of 5k
-    row['blah blah tuitiion cost'] = 0.01 if row['blah blah tuitiion cost'] > 5000 else row['blah blah tuitiion cost']
+    # Break Tuition cost into categories. Intervals of 5k.
+    row[tuition_key] = "Less than $5,000" if row[tuition_key] < 5000 else row[tuition_key]
+    row[tuition_key] = "$5,000 - $9,999" if row[tuition_key] < 10000 else row[tuition_key]
+    row[tuition_key] = "$10,000 - $14,999" if row[tuition_key] < 15000 else row[tuition_key]
+    row[tuition_key] = "$15,000 - $19,999" if row[tuition_key] < 20000 else row[tuition_key]
+    row[tuition_key] = "$20,000 - $24,999" if row[tuition_key] < 25000 else row[tuition_key]
+    row[tuition_key] = "$25,000 - $29,999" if row[tuition_key] < 30000 else row[tuition_key]
+    row[tuition_key] = "$30,000 - $34,999" if row[tuition_key] < 35000 else row[tuition_key]
+    row[tuition_key] = "$35,000 - $39,999" if row[tuition_key] < 40000 else row[tuition_key]
+    row[tuition_key] = "$40,000 - $44,999" if row[tuition_key] < 45000 else row[tuition_key]
+    row[tuition_key] = "$45000 - $49999" if row[tuition_key] < 50000 else row[tuition_key]
 
     # duplicate row handling
     if key in data:
