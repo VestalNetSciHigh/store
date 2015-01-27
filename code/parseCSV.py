@@ -63,6 +63,9 @@ def output(content, filename=TARGET, ext=".txt", mode="print", charlimit=0, prin
 # def get_bins(position, width):
 #     yield position * width
 
+def print_this_thing_quickly(text):
+    print text
+
 
 # begin program
 csvfile = open(PATH + "\\" + TARGET + ".csv")
@@ -87,13 +90,15 @@ for row in reader:
     row[tuition_key] = "$40,000 - $44,999" if row[tuition_key] < 45000 else row[tuition_key]
     row[tuition_key] = "$45000 - $49999" if row[tuition_key] < 50000 else row[tuition_key]
 
+    print row[tuition_key]
+
     # duplicate row handling
     if key in data:
         print "WARNING: 'unitid' duplicate: " + key
         pass
     data[key] = row
 
-output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")
+output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json", print_in_console=True)
 
 # dict to "one-hot" format
 vec = DictVectorizer()
@@ -101,5 +106,5 @@ sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
 feature_names = vec.get_feature_names()
 
 
-output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)
-output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
+# output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)
+# output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
