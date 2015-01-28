@@ -128,11 +128,7 @@ for row in reader:
         pass
     data[key] = row
 
-<<<<<<< HEAD
 # output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")
-=======
-output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json", print_in_console=True)
->>>>>>> origin/master
 
 # dict to "one-hot" format
 vec = DictVectorizer()
@@ -141,8 +137,4 @@ feature_names = vec.get_feature_names()
 
 
 # output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)
-<<<<<<< HEAD
-output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
-=======
 # output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
->>>>>>> origin/master
