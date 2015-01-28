@@ -69,6 +69,9 @@ def get_category_bins(width, position, unit='', prefix_unit=False):
         return min_num + " - " + max_num
         # todo: add 1000 comma separators to result strings
 
+def print_this_thing_quickly(text):
+    print text
+
 
 # begin program
 csvfile = open(PATH + "\\" + TARGET + ".csv")
@@ -117,13 +120,19 @@ for row in reader:
 
     print "FINAL CATEGORY: " + row[tuition_key]
 
+    print row[tuition_key]
+
     # duplicate row handling
     if key in data:
         print "WARNING: duplicate key: " + key
         pass
     data[key] = row
 
+<<<<<<< HEAD
 # output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")
+=======
+output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json", print_in_console=True)
+>>>>>>> origin/master
 
 # dict to "one-hot" format
 vec = DictVectorizer()
@@ -132,4 +141,8 @@ feature_names = vec.get_feature_names()
 
 
 # output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)
+<<<<<<< HEAD
 output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
+=======
+# output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
+>>>>>>> origin/master
