@@ -45,7 +45,7 @@ def output(content, filename=TARGET, ext=".txt", mode="print", charlimit=0, prin
                 print filename+ext + " already exists! Overwriting."
             else:
                 print filename+ext + " already exists! Terminating write operation."
-                return
+                return  # Terminate function: Avoid overwrite.
     if charlimit > 0:
         content = content[:charlimit]
 
@@ -60,8 +60,14 @@ def output(content, filename=TARGET, ext=".txt", mode="print", charlimit=0, prin
         print content
 
 
-# def get_bins(position, width):
-#     yield position * width
+def get_category_bins(width, position, unit='', prefix_unit=False):
+    if position < 1:
+        return ("Less than " if position == 0 else "Greater than ") + (unit+str(width) if prefix_unit else str(width)+" "+unit)
+    else:
+        min_num = (unit+str(width * position) if prefix_unit else str(width * position)+" "+unit)
+        max_num = (unit+str(width * (position + 1) - 1) if prefix_unit else str(width * (position + 1) - 1)+" "+unit)
+        return min_num + " - " + max_num
+        # todo: add 1000 comma separators to result strings
 
 
 # begin program
@@ -71,29 +77,53 @@ reader = csv.DictReader(csvfile)
 # CSV to dict
 data = {}
 tuition_key = 'DRVIC2013.Tuition and fees, 2013-14'  # numerical to categorical
+tuition_interval = 2000  # bins for categorical conversion
 for row in reader:
-    row.pop('unitid')  # unnecessary unique ID
-    key = row.pop('institution name')
+    key = row.pop('unitid')
+    # key = row.pop('institution name')  # There exist multiple institutions with the same name but different locations.
 
-    # Break Tuition cost into categories. Intervals of 5k.
-    row[tuition_key] = "Less than $5,000" if row[tuition_key] < 5000 else row[tuition_key]
-    row[tuition_key] = "$5,000 - $9,999" if row[tuition_key] < 10000 else row[tuition_key]
-    row[tuition_key] = "$10,000 - $14,999" if row[tuition_key] < 15000 else row[tuition_key]
-    row[tuition_key] = "$15,000 - $19,999" if row[tuition_key] < 20000 else row[tuition_key]
-    row[tuition_key] = "$20,000 - $24,999" if row[tuition_key] < 25000 else row[tuition_key]
-    row[tuition_key] = "$25,000 - $29,999" if row[tuition_key] < 30000 else row[tuition_key]
-    row[tuition_key] = "$30,000 - $34,999" if row[tuition_key] < 35000 else row[tuition_key]
-    row[tuition_key] = "$35,000 - $39,999" if row[tuition_key] < 40000 else row[tuition_key]
-    row[tuition_key] = "$40,000 - $44,999" if row[tuition_key] < 45000 else row[tuition_key]
-    row[tuition_key] = "$45000 - $49999" if row[tuition_key] < 50000 else row[tuition_key]
+    # Assign a categorical tuition cost
+    print "READ THIS ---------------------------------- READ THIS ------------------------------------------- READ THIS"
+    isConverted = False  # True when numerical to categorical conversion is successful
+    for pos in range(0, 9):
+        print "pos = " + str(pos)
+        print "Value: " + str(row[tuition_key])
+        print "Value+1: " + str(int(row[tuition_key]) + 1)
+        print "Compare: " + str(tuition_interval * (pos + 1))
+        print "Compare  left: " + str(row[tuition_key])
+        print "Compare right: " + str(tuition_interval * (pos + 1))
+        print "Result:       " + str(int(row[tuition_key]) < tuition_interval * (pos + 1))
+
+        if int(row[tuition_key]) < tuition_interval * (pos + 1):
+            print "Apply conversion"
+            row[tuition_key] = get_category_bins(tuition_interval, pos, unit='$', prefix_unit=True)
+            isConverted = True
+            break
+    print "isConverted? " + str(isConverted)
+    if not isConverted:
+        row[tuition_key] = get_category_bins(tuition_interval * 10, -1, unit='$', prefix_unit=True)  # Final category
+
+# # following code was not working correctly
+#     row[tuition_key] = "Less than $5,000" if row[tuition_key] < 5000 else row[tuition_key]
+#     row[tuition_key] = "$5,000 - $9,999" if row[tuition_key] < 10000 else row[tuition_key]
+#     row[tuition_key] = "$10,000 - $14,999" if row[tuition_key] < 15000 else row[tuition_key]
+#     row[tuition_key] = "$15,000 - $19,999" if row[tuition_key] < 20000 else row[tuition_key]
+#     row[tuition_key] = "$20,000 - $24,999" if row[tuition_key] < 25000 else row[tuition_key]
+#     row[tuition_key] = "$25,000 - $29,999" if row[tuition_key] < 30000 else row[tuition_key]
+#     row[tuition_key] = "$30,000 - $34,999" if row[tuition_key] < 35000 else row[tuition_key]
+#     row[tuition_key] = "$35,000 - $39,999" if row[tuition_key] < 40000 else row[tuition_key]
+#     row[tuition_key] = "$40,000 - $44,999" if row[tuition_key] < 45000 else row[tuition_key]
+#     row[tuition_key] = "$45,000 - $49,999" if row[tuition_key] < 50000 else row[tuition_key]
+
+    print "FINAL CATEGORY: " + row[tuition_key]
 
     # duplicate row handling
     if key in data:
-        print "WARNING: 'unitid' duplicate: " + key
+        print "WARNING: duplicate key: " + key
         pass
     data[key] = row
 
-output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")
+# output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")
 
 # dict to "one-hot" format
 vec = DictVectorizer()
@@ -101,5 +131,5 @@ sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
 feature_names = vec.get_feature_names()
 
 
-output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)
+# output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)
 output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
