@@ -14,7 +14,7 @@ __author__ = 'Chris'
 #  - non-linear
 
 
-def rogers_tanimoto_distance(function, num_similar, num_total):
+def metric(function, num_similar, num_total):
     if function == "rogersTanimoto":
         return 2 * (num_total - num_similar) / float(num_total + (num_total - num_similar))
     if function == "matching":
@@ -23,5 +23,5 @@ def rogers_tanimoto_distance(function, num_similar, num_total):
 
 total = 50
 for x in range(0, total + 1):
-    # print str(x) + "/" + str(total) + ": " + str(metric(x, total))
-    print str(rogers_tanimoto_distance("matching", x, total))
+    # print str(x) + "/" + str(total) + ": " + str(metric("rogersTanimoto", x, total))
+    print str(metric("matching", x, total))
