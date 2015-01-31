@@ -71,7 +71,9 @@ def get_category_bins(width, position, unit='', prefix_unit=False):
     """
 
     if position < 1:
-        return ("Less than " if position == 0 else "Greater than ") + (unit+str(width) if prefix_unit else str(width)+" "+unit)
+        bin = "{:,}".format(width)
+        return ("Less than " if position == 0 else "Greater than ") + \
+               (unit+bin if prefix_unit else bin+" "+unit)
     else:
         min_num = (unit+str(width * position) if prefix_unit else str(width * position)+" "+unit)
         max_num = (unit+str(width * (position + 1) - 1) if prefix_unit else str(width * (position + 1) - 1)+" "+unit)
@@ -85,36 +87,39 @@ reader = csv.DictReader(csvfile)
 
 # CSV to dict
 data = {}
+
 tuition_key = 'DRVIC2013.Tuition and fees, 2013-14'  # numerical to categorical
 tuition_interval = 5000  # bins for categorical conversion
+tuition_bins = 10  # number of bins (each with a width of "tuition_interval"
 for row in reader:
     key = row.pop('unitid')
     # key = row.pop('institution name')  # There exist multiple institutions with the same name but different locations.
 
     # Assign a categorical tuition cost
     isConverted = False  # True when numerical to categorical conversion is successful
-    for pos in range(0, 9):
-
+    for pos in range(0, tuition_bins - 1):
         if int(row[tuition_key]) < tuition_interval * (pos + 1):
             row[tuition_key] = get_category_bins(tuition_interval, pos, unit='$', prefix_unit=True)
             isConverted = True
             break
-    if not isConverted:
-        row[tuition_key] = get_category_bins(tuition_interval * 10, -1, unit='$', prefix_unit=True)  # Final category
+    if not isConverted:  # Final category
+        row[tuition_key] = get_category_bins(tuition_interval * (tuition_bins - 1), -1, unit='$', prefix_unit=True)
 
     # duplicate row handling
     if key in data:
         print "WARNING: duplicate key: " + key
         pass
+
     data[key] = row
+    print row[tuition_key]
 
 # output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")
 
 # dict to "one-hot" format
 vec = DictVectorizer()
 sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
-feature_names = vec.get_feature_names()
-
-
 # output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)
-output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
+
+feature_names = vec.get_feature_names()  # not required
+# output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
+
