@@ -62,22 +62,26 @@ def output(content, filename=TARGET, ext=".txt", mode="print", charlimit=0, prin
 
 def get_category_bins(width, position, unit='', prefix_unit=False):
     """
-    Description
+    Returns a String representing which bin numerical data falls into, meant to replace the numerical data.
 
-    Parameters:       width:
-                   position:
-                       unit:
-                prefix_unit:
+    Parameters:       width: bin width, good values are approximately 2 * n * IQR^(-1/3)
+                   position: Designates which bin for which to build a String. A 0 denotes the category should read
+                            "Less than" the lowest bin, and -1 is reserved for "Greater than" the highest bin specified.
+                       unit: a symbol or small String to be used as a prefix or postfix, see Boolean prefix_unit
+                prefix_unit: When True, prepend unit symbol, or else append it.
     """
 
     if position < 1:
-        bin = "{:,}".format(width)
+        _bin = "{:,}".format(width)
         return ("Less than " if position == 0 else "Greater than ") + \
-               (unit+bin if prefix_unit else bin+" "+unit)
+               (unit+_bin if prefix_unit else _bin+" "+unit)
     else:
-        min_num = (unit+str(width * position) if prefix_unit else str(width * position)+" "+unit)
-        max_num = (unit+str(width * (position + 1) - 1) if prefix_unit else str(width * (position + 1) - 1)+" "+unit)
-        return min_num + " - " + max_num
+        _min_num = "{:,}".format(width * position)
+        _max_num = "{:,}".format(width * (position + 1) - 1)
+        if prefix_unit:
+            return unit+_min_num + " - " + unit+_max_num
+        else:
+            return _min_num+" "+unit + " - " + _max_num+" "+unit
         # todo: add 1000 comma separators to result strings
 
 
@@ -111,7 +115,6 @@ for row in reader:
         pass
 
     data[key] = row
-    print row[tuition_key]
 
 # output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")
 
