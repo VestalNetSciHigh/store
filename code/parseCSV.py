@@ -3,6 +3,10 @@ __author__ = 'VestalNetSciHigh'
 # Todo 0: create our own metric for [0, 1] (with own normalization -> using scipy)
 # NTT / number of categories     where NTT = number of dims in which both values are True
 # number of Trues (if True sum += 1)    <- test function check for same num trues in each row
+# http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.DistanceMetric.html
+# https://github.com/scikit-learn/scikit-learn/blob/master/sklearn/neighbors/dist_metrics.pyx
+# http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html
+
 # Todo 1: scikit-lean distance metric used to generate a n*n matrix (each element of the sparce_matrix against every other) (numpy format)
 # Todo 2: Determine the threshold for the matrix
 # Todo 3: Set matrix values to 0 that fall below the threshold
@@ -15,6 +19,7 @@ import csv
 import os
 import json
 from sklearn.feature_extraction import DictVectorizer
+from sklearn.neighbors import DistanceMetric
 
 
 # path to data directory, target file (csv file, without extension), output directory
@@ -138,7 +143,11 @@ for row in reader:
 # dict to "one-hot" format
 vec = DictVectorizer()
 sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
-# output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)  # output intermediary step
+output(sparse_matrix, filename=TARGET[12:]+"_matrix", mode="write", ext=".txt", print_in_console=True)  # output intermediary step
 
 feature_names = vec.get_feature_names()  # not required, just for inspection
 # output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)  # output intermediary step
+
+dist = DistanceMetric.get_metric('kulsinski')
+distances = dist.pairwise(sparse_matrix)
+output(distances, filename=TARGET[12:]+"_distances", mode="write", ext=".txt", print_in_console=True)
