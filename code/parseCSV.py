@@ -1,5 +1,8 @@
 __author__ = 'VestalNetSciHigh'
 
+# Todo 0: create our own metric for [0, 1] (with own normalization -> using scipy)
+# NTT / number of categories     where NTT = number of dims in which both values are True
+# number of Trues (if True sum += 1)    <- test function check for same num trues in each row
 # Todo 1: scikit-lean distance metric used to generate a n*n matrix (each element of the sparce_matrix against every other) (numpy format)
 # Todo 2: Determine the threshold for the matrix
 # Todo 3: Set matrix values to 0 that fall below the threshold
