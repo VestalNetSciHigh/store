@@ -1,16 +1,12 @@
 __author__ = 'VestalNetSciHigh'
 
-#Todo_1: scikit-lean distance metric used to generate a n*n matrix (each element of the sparce_matrix against every other) (numpy format)
-
-#Todo_2: Determine the threshold for the matrix
-
-#Todo_3: Set matrix values to 0 that fall below the threshold
-
-#Todo_4: Generate a network using networkx using the matrix as the adjacency matrix (networkx takes numpy matrix format)
-#Note: labels for the nodes in the network will be lost in the above process.  You will need to keep track of the university name
-#and it's specific position in the matrix
-
-#Todo_5: Save network in a "Gephiable" data format
+# Todo 1: scikit-lean distance metric used to generate a n*n matrix (each element of the sparce_matrix against every other) (numpy format)
+# Todo 2: Determine the threshold for the matrix
+# Todo 3: Set matrix values to 0 that fall below the threshold
+# Todo 4: Generate a network using networkx using the matrix as the adjacency matrix (networkx takes numpy matrix format)
+# Note: labels for the nodes in the network will be lost in the above process.  You will need to keep track of the
+# university name and it's specific position in the matrix
+# Todo 5: Save network in a "Gephiable" data format
 
 import csv
 import os
@@ -60,30 +56,57 @@ def output(content, filename=TARGET, ext=".txt", mode="print", charlimit=0, prin
         print content
 
 
-def get_category_bins(width, position, unit='', prefix_unit=False):
+def numerical_to_categorical(value, interval, bins, unit='', prefix_unit=False):
     """
     Returns a String representing which bin numerical data falls into, meant to replace the numerical data.
 
-    Parameters:       width: bin width, good values are approximately 2 * n * IQR^(-1/3)
-                   position: Designates which bin for which to build a String. A 0 denotes the category should read
-                            "Less than" the lowest bin, and -1 is reserved for "Greater than" the highest bin specified.
+    Parameters:       value: numerical data to be replaced
+                   interval: bin width
+                       bins: number of bins for sorting
+
+                  (optional)
                        unit: a symbol or small String to be used as a prefix or postfix, see Boolean prefix_unit
                 prefix_unit: When True, prepend unit symbol, or else append it.
     """
 
-    if position < 1:
-        _bin = "{:,}".format(width)
-        return ("Less than " if position == 0 else "Greater than ") + \
-               (unit+_bin if prefix_unit else _bin+" "+unit)
-    else:
-        _min_num = "{:,}".format(width * position)
-        _max_num = "{:,}".format(width * (position + 1) - 1)
-        if prefix_unit:
-            return unit+_min_num + " - " + unit+_max_num
-        else:
-            return _min_num+" "+unit + " - " + _max_num+" "+unit
-        # todo: add 1000 comma separators to result strings
+    final_string = ""
 
+    def get_category_bins(width, position, _unit='', _prefix_unit=False):
+        """
+        Returns a String representing which bin numerical data falls into, meant to replace the numerical data.
+
+        Parameters:       width: bin width, good values are approximately 2 * n * IQR^(-1/3)
+                       position: Designates which bin for which to build a String. A 0 denotes that the category
+                                 should read "Less than" the lowest bin, and -1 is reserved for "Greater than"
+                                 the highest bin specified.
+
+                      (optional)
+                          _unit: a symbol or small String to be used as a prefix or postfix, see Boolean prefix_unit
+                   _prefix_unit: When True, prepend unit symbol, or else append it.
+        """
+
+        if position < 1:
+            _bin = "{:,}".format(width)
+            return ("Less than " if position == 0 else "Greater than ") + \
+                   (_unit+_bin if _prefix_unit else _bin+" "+_unit)
+        else:
+            _min_num = "{:,}".format(width * position)
+            _max_num = "{:,}".format(width * (position + 1) - 1)
+            if _prefix_unit:
+                return _unit+_min_num + " - " + _unit+_max_num
+            else:
+                return _min_num+" "+_unit + " - " + _max_num+" "+_unit
+
+    is_converted = False  # True when numerical to categorical conversion is successful
+    for pos in range(0, bins - 1):
+        if int(value) < interval * (pos + 1):
+            final_string = get_category_bins(interval, pos, _unit=unit, _prefix_unit=prefix_unit)
+            is_converted = True
+            break
+    if not is_converted:  # Final category
+        final_string = get_category_bins(interval * (bins - 1), -1, _unit=unit, _prefix_unit=prefix_unit)
+
+    return final_string
 
 # begin program
 csvfile = open(PATH + "\\" + TARGET + ".csv")
@@ -92,22 +115,13 @@ reader = csv.DictReader(csvfile)
 # CSV to dict
 data = {}
 
-tuition_key = 'DRVIC2013.Tuition and fees, 2013-14'  # numerical to categorical
-tuition_interval = 5000  # bins for categorical conversion
-tuition_bins = 10  # number of bins (each with a width of "tuition_interval"
+tuition_key = 'DRVIC2013.Tuition and fees, 2013-14'  # to be converted: numerical to categorical
 for row in reader:
     key = row.pop('unitid')
     # key = row.pop('institution name')  # There exist multiple institutions with the same name but different locations.
 
     # Assign a categorical tuition cost
-    isConverted = False  # True when numerical to categorical conversion is successful
-    for pos in range(0, tuition_bins - 1):
-        if int(row[tuition_key]) < tuition_interval * (pos + 1):
-            row[tuition_key] = get_category_bins(tuition_interval, pos, unit='$', prefix_unit=True)
-            isConverted = True
-            break
-    if not isConverted:  # Final category
-        row[tuition_key] = get_category_bins(tuition_interval * (tuition_bins - 1), -1, unit='$', prefix_unit=True)
+    row[tuition_key] = numerical_to_categorical(row[tuition_key], 5000, 10, unit='$', prefix_unit=True)
 
     # duplicate row handling
     if key in data:
@@ -116,13 +130,12 @@ for row in reader:
 
     data[key] = row
 
-# output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")
+# output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")  # output intermediary step
 
 # dict to "one-hot" format
 vec = DictVectorizer()
 sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
-# output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)
+# output(sparse_matrix, filename=TARGET[12:]+"_matrix", ext=".txt", print_in_console=True)  # output intermediary step
 
-feature_names = vec.get_feature_names()  # not required
-# output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)
-
+feature_names = vec.get_feature_names()  # not required, just for inspection
+# output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)  # output intermediary step
