@@ -13,6 +13,7 @@ __author__ = 'VestalNetSciHigh'
 # Todo 4: Generate a network using networkx using the matrix as the adjacency matrix (networkx takes numpy matrix format)
 # Note: labels for the nodes in the network will be lost in the above process.  You will need to keep track of the
 # university name and it's specific position in the matrix
+# Note #2: (maybe, if networkx doesn't take real valued adjacency): above threshold to 1
 # Todo 5: Save network in a "Gephiable" data format
 
 import csv
@@ -20,11 +21,12 @@ import os
 import json
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.neighbors import DistanceMetric
+import networkx as nx
 
 
 # path to data directory, target file (csv file, without extension), output directory
 PATH = "..\\data"
-TARGET = "NetSci-Data-15w04f"
+TARGET = "NetSci-Data-15w06b"
 OUTPUT = "..\\output"
 
 
@@ -138,16 +140,52 @@ for row in reader:
 
     data[key] = row
 
-# output(json.dumps(data), filename=TARGET[12:]+"_dict", ext=".json")  # output intermediary step
-
 # dict to "one-hot" format
 vec = DictVectorizer()
 sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
-output(sparse_matrix, filename=TARGET[12:]+"_matrix", mode="write", ext=".txt", print_in_console=True)  # output intermediary step
 
-feature_names = vec.get_feature_names()  # not required, just for inspection
-# output(feature_names, filename=TARGET[12:]+"_features", ext=".txt", print_in_console=True)  # output intermediary step
+# insure same number of categories in each row
+num_trues = []
+for row in sparse_matrix:
+    num_trues.append((sum(row)))
+num_categories = num_trues[0]
+for val in num_trues:
+    if not (num_categories == val):
+        raise Exception("Mismatch in number of categories!")
 
-dist = DistanceMetric.get_metric('kulsinski')
-distances = dist.pairwise(sparse_matrix)
-output(distances, filename=TARGET[12:]+"_distances", mode="write", ext=".txt", print_in_console=True)
+def distance(array_one, array_two):
+    if not array_one.__len__() == array_two.__len__():
+        raise Exception("Arrays must be the same length.")
+    ntt = 0  # number of dimensions in which both values are True
+    for i in range(0, array_one.__len__() - 1):
+        if (array_one[i] == 1) and (array_two[i] == 1):
+            ntt += 1
+    return ntt / num_categories
+
+distance_calculator = DistanceMetric.get_metric(distance)
+distances = distance_calculator.pairwise(sparse_matrix)
+
+# compute average distances
+distance_list = distances.tolist()
+average_similarity = []
+for index in range(0, sparse_matrix.__len__() - 1):
+    average_similarity.append(sum(distance_list[index]) / distance_list[index].__len__())
+sum_of_averages = 0
+for value in average_similarity:
+    sum_of_averages += sum(distance_list[index])
+
+average_distance = sum_of_averages / average_similarity.__len__()
+print "Average distance: " + str(average_distance)
+
+# set values below threshold to 0
+threshold = 0.40
+for count in range(0, distances[0].__len__()):
+    print str(distances[0][count])
+    if distances[0][count] <= threshold:
+        print "Below Threshold"
+        distances[0][count] = 0
+print distances[0]
+
+# Create a networkx graph
+G = nx.from_numpy_matrix(distances)
+print G.edges()
