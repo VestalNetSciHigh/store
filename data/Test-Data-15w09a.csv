@@ -1,0 +1,11 @@
+unitid,institution name,EF2013D.Student-to-faculty ratio,"DRVIC2013.Tuition and fees, 2013-14",HD2013.Institution size category,HD2013.FIPS state code,HD2013.Geographic region,HD2013.Level of institution,HD2013.Control of institution,HD2013.Degree of urbanization (Urban-centric locale)
+100654,Alabama A & M University,15,7182,"5,000 - 9,999",Alabama,Southeast AL AR FL GA KY LA MS NC SC TN VA WV,Four or more years,Public,City: Midsize
+175421,Belhaven University,12,19970,"1,000 - 4,999",Mississippi,Southeast AL AR FL GA KY LA MS NC SC TN VA WV,Four or more years,Private not-for-profit,City: Midsize
+177418,Fontbonne University,10,22684,"1,000 - 4,999",Missouri,Plains IA KS MN MO NE ND SD,Four or more years,Private not-for-profit,Suburb: Large
+180081,Highlands College of Montana Tech,15,3226,"Under 1,000",Montana,Rocky Mountains CO ID MT UT WY,At least 2 but less than 4 years,Public,Town: Remote
+186371,Rutgers University-Camden,12,13348,"5,000 - 9,999",New Jersey,Mid East DE DC MD NJ NY PA,Four or more years,Public,City: Small
+188030,New Mexico State University-Main Campus,17,6220,"10,000 - 19,999",New Mexico,Southwest AZ NM OK TX,Four or more years,Public,Suburb: Midsize
+189547,SUNY Broome Community College,20,4541,"5,000 - 9,999",New York,Mid East DE DC MD NJ NY PA,At least 2 but less than 4 years,Public,Suburb: Midsize
+190150,Columbia University in the City of New York,6,49138,"20,000 and above",New York,Mid East DE DC MD NJ NY PA,Four or more years,Private not-for-profit,City: Large
+218821,Spartanburg Methodist College,20,15745,"Under 1,000",South Carolina,Southeast AL AR FL GA KY LA MS NC SC TN VA WV,At least 2 but less than 4 years,Private not-for-profit,Suburb: Midsize
+230807,Westminster College,9,29500,"1,000 - 4,999",Utah,Rocky Mountains CO ID MT UT WY,Four or more years,Private not-for-profit,City: Midsize

@@ -26,7 +26,7 @@ import networkx as nx
 
 # path to data directory, target file (csv file, without extension), output directory
 PATH = "..\\data"
-TARGET = "NetSci-Data-15w06b"
+TARGET = "Test-Data-15w09c"
 OUTPUT = "..\\output"
 
 
@@ -128,10 +128,12 @@ data = {}
 tuition_key = 'DRVIC2013.Tuition and fees, 2013-14'  # to be converted: numerical to categorical
 for row in reader:
     key = row.pop('unitid')
+    if key == '':
+        continue
     # key = row.pop('institution name')  # There exist multiple institutions with the same name but different locations.
 
     # Assign a categorical tuition cost
-    row[tuition_key] = numerical_to_categorical(row[tuition_key], 5000, 10, unit='$', prefix_unit=True)
+    row[tuition_key] = numerical_to_categorical(row[tuition_key], 5000, 3, unit='$', prefix_unit=True)
 
     # duplicate row handling
     if key in data:
@@ -143,6 +145,7 @@ for row in reader:
 # dict to "one-hot" format
 vec = DictVectorizer()
 sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
+print sparse_matrix
 
 # insure same number of categories in each row
 num_trues = []
@@ -153,15 +156,17 @@ for val in num_trues:
     if not (num_categories == val):
         raise Exception("Mismatch in number of categories!")
 
+# out custom distance metric
 def distance(array_one, array_two):
     if not array_one.__len__() == array_two.__len__():
         raise Exception("Arrays must be the same length.")
-    ntt = 0  # number of dimensions in which both values are True
+    ntt = 0  # count the number of dimensions in which both values are True
     for i in range(0, array_one.__len__() - 1):
         if (array_one[i] == 1) and (array_two[i] == 1):
             ntt += 1
     return ntt / num_categories
 
+# generate distances
 distance_calculator = DistanceMetric.get_metric(distance)
 distances = distance_calculator.pairwise(sparse_matrix)
 
@@ -188,4 +193,6 @@ print distances[0]
 
 # Create a networkx graph
 G = nx.from_numpy_matrix(distances)
-print G.edges()
+# print G.edges()
+
+print "Number of categories: " + str(num_categories)
