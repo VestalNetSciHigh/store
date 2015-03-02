@@ -80,6 +80,7 @@ def numerical_to_categorical(value, interval, bins, unit='', prefix_unit=False):
     """
 
     final_string = ""
+    bins += 1
 
     def get_category_bins(width, position, _unit='', _prefix_unit=False):
         """
@@ -118,7 +119,21 @@ def numerical_to_categorical(value, interval, bins, unit='', prefix_unit=False):
 
     return final_string
 
-# begin program
+
+# out custom distance metric
+def distance(array_one, array_two):
+    if not array_one.__len__() == array_two.__len__():
+        raise Exception("Arrays must be the same length.")
+    ntt = 0  # count the number of dimensions in which both values are True
+    for i in xrange(array_one.__len__()):
+        if (array_one[i] == 1) and (array_two[i] == 1):
+            ntt += 1
+    return float(ntt) / num_categories
+
+
+#################
+# BEGIN PROGRAM #
+#################
 csvfile = open(PATH + "\\" + TARGET + ".csv")
 reader = csv.DictReader(csvfile)
 
@@ -145,7 +160,6 @@ for row in reader:
 # dict to "one-hot" format
 vec = DictVectorizer()
 sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
-print sparse_matrix
 
 # insure same number of categories in each row
 num_trues = []
@@ -156,43 +170,46 @@ for val in num_trues:
     if not (num_categories == val):
         raise Exception("Mismatch in number of categories!")
 
-# out custom distance metric
-def distance(array_one, array_two):
-    if not array_one.__len__() == array_two.__len__():
-        raise Exception("Arrays must be the same length.")
-    ntt = 0  # count the number of dimensions in which both values are True
-    for i in range(0, array_one.__len__() - 1):
-        if (array_one[i] == 1) and (array_two[i] == 1):
-            ntt += 1
-    return ntt / num_categories
+print "Number of categories (denominator): " + str(num_categories)
 
 # generate distances
 distance_calculator = DistanceMetric.get_metric(distance)
 distances = distance_calculator.pairwise(sparse_matrix)
 
 # compute average distances
-distance_list = distances.tolist()
-average_similarity = []
-for index in range(0, sparse_matrix.__len__() - 1):
-    average_similarity.append(sum(distance_list[index]) / distance_list[index].__len__())
 sum_of_averages = 0
-for value in average_similarity:
-    sum_of_averages += sum(distance_list[index])
-
-average_distance = sum_of_averages / average_similarity.__len__()
+for index in xrange(distances.__len__()):
+    sum_of_averages += (sum(distances[index]) / float(distances[index].__len__()))
+average_distance = sum_of_averages / distances.__len__()
 print "Average distance: " + str(average_distance)
 
+# compute median distance
+ordered_distances = []
+for i in xrange(distances.__len__()):
+    for id in distances[i]:
+        ordered_distances.append(id)
+ordered_distances.sort()
+
+# compute median distance
+median_distance = 0
+index_float = ordered_distances.__len__() / 2.0
+index_whole = ordered_distances.__len__() / 2  # intentional truncation
+if index_float - index_whole < 0.001:
+    median_distance = (ordered_distances[index_whole] + ordered_distances[index_whole + 1]) / 2.0
+else:
+    median_distance = ordered_distances[index_whole]
+print "Median distance: " + str(median_distance)
+
 # set values below threshold to 0
-threshold = 0.40
-for count in range(0, distances[0].__len__()):
-    print str(distances[0][count])
-    if distances[0][count] <= threshold:
-        print "Below Threshold"
-        distances[0][count] = 0
-print distances[0]
+threshold = median_distance
+for i in xrange(distances.__len__()):
+    for j in xrange(distances[0].__len__()):
+        if distances[i][j] < threshold:
+            distances[i][j] = 0
+
+print distances
 
 # Create a networkx graph
 G = nx.from_numpy_matrix(distances)
 # print G.edges()
 
-print "Number of categories: " + str(num_categories)
