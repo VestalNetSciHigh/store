@@ -18,15 +18,15 @@ __author__ = 'VestalNetSciHigh'
 
 import csv
 import os
-import json
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.neighbors import DistanceMetric
 import networkx as nx
+import time
 
 
 # path to data directory, target file (csv file, without extension), output directory
 PATH = "..\\data"
-TARGET = "Test-Data-15w09c"
+TARGET = "NetSci-Data-15w04d_TEMP"
 OUTPUT = "..\\output"
 
 
@@ -134,6 +134,7 @@ def distance(array_one, array_two):
 #################
 # BEGIN PROGRAM #
 #################
+start_time = time.time()
 csvfile = open(PATH + "\\" + TARGET + ".csv")
 reader = csv.DictReader(csvfile)
 
@@ -207,9 +208,17 @@ for i in xrange(distances.__len__()):
         if distances[i][j] < threshold:
             distances[i][j] = 0
 
-print distances
+count_nonzero = 0
+for i in xrange(distances.__len__()):
+    for id in distances[i]:
+        if id > 0:
+            count_nonzero += 1
+print "Non-zero distances: " + str(count_nonzero)
 
 # Create a networkx graph
 G = nx.from_numpy_matrix(distances)
 # print G.edges()
+
+total_seconds = time.time() - start_time
+print "\nFinished in " + str(total_seconds) + " seconds!"
 
