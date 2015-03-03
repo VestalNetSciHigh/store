@@ -207,6 +207,9 @@ for i in xrange(distances.__len__()):
     for j in xrange(distances[0].__len__()):
         if distances[i][j] < threshold:
             distances[i][j] = 0
+        else:
+            # distances[i][j] = 1
+            pass
 
 count_nonzero = 0
 for i in xrange(distances.__len__()):
