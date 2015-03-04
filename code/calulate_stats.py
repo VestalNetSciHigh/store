@@ -2,7 +2,6 @@ __author__ = 'VestalNetSciHigh'
 
 """ Read in data (and array of distance metrics) and calculate various stats """
 
-import networkx as nx
 import time
 from numpy import loadtxt
 import settings
