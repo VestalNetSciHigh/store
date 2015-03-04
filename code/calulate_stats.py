@@ -47,10 +47,6 @@ else:
     median_distance = ordered_distances[index_whole]
 output_string += "Median distance: " + str(median_distance) + "\n"
 
-# Create a networkx graph
-G = nx.from_numpy_matrix(distances)
-# print G.edges()
-
 total_seconds = time.time() - start_time
 output_string += "Finished 'calculate_stats.py' in " + str(total_seconds) + " seconds!"
 settings.output(output_string, "stats_real_valued", mode="write")
