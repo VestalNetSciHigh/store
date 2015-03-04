@@ -7,7 +7,7 @@ from numpy import savetxt
 
 # path to data directory, target file (csv file, without extension), output directory
 PATH = "..\\data"
-TARGET = "Test-Data-15w09c"
+TARGET = "Test-Data-15w10a"
 OUTPUT = "..\\output"
 
 
