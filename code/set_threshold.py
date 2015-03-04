@@ -12,7 +12,7 @@ import os
 import settings
 
 # Configurable Constants
-THRESHOLD = 0.25  # set all distance below this number to 0
+THRESHOLD = 0.33  # set all distance below this number to 0
 MAKE_BINARY = False  # set distances above THRESHOLD to 1
 
 start_time = time.time()

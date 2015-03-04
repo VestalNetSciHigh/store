@@ -4,11 +4,17 @@ __author__ = 'VestalNetSciHigh'
 
 import os
 from numpy import savetxt
+import itertools
+import collections
 
 # path to data directory, target file (csv file, without extension), output directory
 PATH = "..\\data"
-TARGET = "Test-Data-15w10a"
+TARGET = "Test-Data-15w10b"
 OUTPUT = "..\\output"
+
+ID_STRING_KEY = "unitid"
+NAME_STRING_KEY = 'Name'
+TUITION_KEY = 'DRVIC2013.Tuition and fees, 2013-14'  # to be converted: numerical to categorical
 
 
 def output(content, filename=TARGET, ext=".txt", mode="print", charlimit=0, print_in_console=False, overwrite=True):
@@ -113,3 +119,13 @@ def distance(array_one, array_two):
         if (array_one[i] == 1) and (array_two[i] == 1):
             ntt += 1
     return float(ntt) / num_categories
+
+
+def skip(iterable, at_start=0, at_end=0):
+    it = iter(iterable)
+    for x in itertools.islice(it, at_start):
+        pass
+    queue = collections.deque(itertools.islice(it, at_end))
+    for x in it:
+        queue.append(x)
+        yield queue.popleft()

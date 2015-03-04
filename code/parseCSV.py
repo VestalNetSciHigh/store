@@ -2,11 +2,11 @@ __author__ = 'VestalNetSciHigh'
 
 """ Read in data via a .csv file, verify data integrity, calculate distance metrics for each element, and output """
 
-import csv
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.neighbors import DistanceMetric
-import time
 import settings
+import time
+import csv
 
 start_time = time.time()
 csvfile = open(settings.PATH + "\\" + settings.TARGET + ".csv")
@@ -14,16 +14,16 @@ reader = csv.DictReader(csvfile)
 
 # CSV to dict
 data = {}
-
-tuition_key = 'DRVIC2013.Tuition and fees, 2013-14'  # to be converted: numerical to categorical
+names = []
 for row in reader:
-    key = row.pop('unitid')
+    key = row.pop(settings.ID_STRING_KEY)
     if key == '':
         continue
-    # key = row.pop('institution name')  # There exist multiple institutions with the same name but different locations.
+    # key = row.pop(name_string_key)  # There exist multiple institutions with the same name but different locations.
 
     # Assign a categorical tuition cost
-    row[tuition_key] = settings.numerical_to_categorical(row[tuition_key], 5000, 11, unit='$', prefix_unit=True)
+    row[settings.TUITION_KEY] = \
+        settings.numerical_to_categorical(row[settings.TUITION_KEY], 5000, 11, unit='$', prefix_unit=True)
 
     # duplicate row handling
     if key in data:
@@ -31,9 +31,26 @@ for row in reader:
         pass
 
     data[key] = row
+    names.append(row.pop(settings.NAME_STRING_KEY))
+
 print "Number of elements: " + str(data.__len__())
 
-# dict to "one-hot" format
+# save reordered dict as a new .csv (only two columns)
+w = csv.writer(open(settings.OUTPUT+"\\dict_data.dat", "w"))
+w.writerow([settings.ID_STRING_KEY, 'val'])
+for key, val in data.items():
+    w.writerow([key, val])
+
+# extract unitid from reordered dict (order was not preserved)
+r = csv.DictReader(open(settings.OUTPUT+"\\dict_data.dat"))
+w = csv.writer(open(settings.OUTPUT+"\\dict_data_selective_attributes.dat", "w"))
+w.writerow([settings.ID_STRING_KEY, settings.NAME_STRING_KEY])
+count = 0
+for row in r:
+    w.writerow([row.pop(settings.ID_STRING_KEY), names[count]])
+    count += 1
+
+# dict to "one-hot" format (order assumed to be preserved)
 vec = DictVectorizer()
 sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
 
