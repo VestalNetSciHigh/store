@@ -21,7 +21,7 @@ set next=settings
 call :ColorText 0 "Welcome,"
 call :ColorText %col% " NetSci High Team"
 echo .
-echo This program provides an interface for running the multiple python scrips.
+echo This program provides an interface for running the multiple python scripts.
 goto choice
 
 :last_choice
