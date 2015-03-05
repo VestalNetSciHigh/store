@@ -27,7 +27,7 @@ for row in csv_reader:
         pass
     for tag in fieldnames[1:]:
         G.node[int(row[fieldnames[0]])][tag] = row[tag]
-print G.nodes(data=True)
+# print G.nodes(data=True)
 
 # Add edge data, change color of edges above the average weight
 
