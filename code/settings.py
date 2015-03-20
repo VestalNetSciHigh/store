@@ -9,11 +9,12 @@ import collections
 
 # path to data directory, target file (csv file, without extension), output directory
 PATH = "..\\data"
-TARGET = "Test-Data-15w10b"
+# TARGET = "NetSci-Data-15w04f"
+TARGET = "NetSci-Data-15w04f"
 OUTPUT = "..\\output"
 
 ID_STRING_KEY = "unitid"
-NAME_STRING_KEY = 'Name'
+NAME_STRING_KEY = 'institution name'
 TUITION_KEY = 'DRVIC2013.Tuition and fees, 2013-14'  # to be converted: numerical to categorical
 
 

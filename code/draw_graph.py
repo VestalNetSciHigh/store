@@ -23,14 +23,17 @@ if not os.path.exists(path):
 
 print
 
-for i in xrange(GRAPH_TYPES.__len__()):
-    for node in GRAPH_TYPES[i][1]:
-        x, y = GRAPH_TYPES[i][1][node]
-        plt.text(x-0.05, y+0.05, s=nx.get_node_attributes(G, settings.NAME_STRING_KEY).pop(str(node)),\
-                 bbox=dict(facecolor='red', alpha=0.4), horizontalalignment='center')
-    nx.draw(G, GRAPH_TYPES[i][1])
-    plt.savefig(path+GRAPH_TYPES[i][0])
-    plt.clf()
+# for i in xrange(GRAPH_TYPES.__len__()):
+#     for node in GRAPH_TYPES[i][1]:
+#         # x, y = GRAPH_TYPES[i][1][node]
+#         # plt.text(x-0.05, y+0.05, s=nx.get_node_attributes(G, settings.NAME_STRING_KEY).pop(str(node)),\
+#                  # bbox=dict(facecolor='red', alpha=0.4), horizontalalignment='center')
+#     nx.draw(G, GRAPH_TYPES[i][1])
+#     plt.savefig(path+GRAPH_TYPES[i][0])
+#     plt.clf()
+
+nx.draw(G, pos=nx.spring_layout(G, k=0.00125))
+plt.savefig(path+"spring.png")
 
 total_seconds = time.time() - start_time
 print "Finished 'draw_graph.py' in " + str(total_seconds) + " seconds!"

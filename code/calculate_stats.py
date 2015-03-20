@@ -3,14 +3,15 @@ __author__ = 'VestalNetSciHigh'
 """ Read in data (and array of distance metrics) and calculate various stats """
 
 import time
-from numpy import loadtxt
+# from numpy import loadtxt
+import numpy
 import settings
 
 start_time = time.time()
 output_string = ""
 
 # load output from parseCSV
-distances = loadtxt(settings.OUTPUT+"\\real_distances.dat")
+distances = numpy.loadtxt(settings.OUTPUT+"\\real_distances.dat")
 
 # sort all distances
 ordered_distances = []
@@ -45,6 +46,12 @@ if index_float - index_whole < 0.001:
 else:
     median_distance = ordered_distances[index_whole]
 output_string += "Median distance: " + str(median_distance) + "\n"
+
+# other stats
+std = numpy.std(ordered_distances)
+var = numpy.var(ordered_distances)
+output_string += "Stardard Dev.: " + str(std)
+output_string += "Variance: " + str(var)
 
 total_seconds = time.time() - start_time
 output_string += "Finished 'calculate_stats.py' in " + str(total_seconds) + " seconds!"

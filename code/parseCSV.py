@@ -37,9 +37,13 @@ print "Number of elements: " + str(data.__len__())
 
 # save reordered dict as a new .csv (only two columns)
 w = csv.writer(open(settings.OUTPUT+"\\dict_data.dat", "w"))
-w.writerow([settings.ID_STRING_KEY, 'val'])
-for key, val in data.items():
-    w.writerow([key, val])
+w.writerow([settings.ID_STRING_KEY, data.keys()])
+data
+for key, vals in data.items():
+    line = []
+    line.append(key)
+    line.extend(vals.values())
+    w.writerow(line)
 
 # extract unitid from reordered dict (order was not preserved)
 r = csv.DictReader(open(settings.OUTPUT+"\\dict_data.dat"))
