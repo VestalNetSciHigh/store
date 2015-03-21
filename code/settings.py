@@ -10,39 +10,13 @@ import collections
 # path to data directory, target file (csv file, without extension), output directory
 PATH = "..\\data"
 TARGET = "NetSci-Data-15w04f"
-OUTPUT = "..\\output " + TARGET[12:]
+OUTPUT = "..\\output\\" + TARGET[12:]
 
 NUM_STANDARD_DEVIATIONS = 2  # Set the SD offset for the threshold
 
 THRESHOLD_MAKE_BINARY = False  # set distances above THRESHOLD to 1
 
 ID_STRING_KEY = "unitid"
-'''
-ATTRIBUTE_STRING_KEYS = [
-    'institution name',
-    'EF2013D.Student-to-faculty ratio',
-    'DRVIC2013.Tuition and fees, 2013-14',
-    'HD2013.Institution size category',
-    'HD2013.FIPS state code',
-    'HD2013.Geographic region',
-    'HD2013.Level of institution',
-    'HD2013.Control of institution',
-    'HD2013.Degree-granting status',
-    'HD2013.Historically Black College or University',
-    'HD2013.Tribal college',
-    'HD2013.Degree of urbanization (Urban-centric locale)',
-    'HD2013.Institutional category',
-    'HD2013.Carnegie Classification 2010: Basic',
-    'HD2013.Carnegie Classification 2010: Undergraduate Instructional Program',
-    'HD2013.Carnegie Classification 2010: Graduate Instructional Program',
-    'HD2013.Carnegie Classification 2010: Undergraduate Profile',
-    'HD2013.Carnegie Classification 2010: Enrollment Profile',
-    'HD2013.Carnegie Classification 2010: Size and Setting',
-    'HD2013.Land Grant Institution',
-    'HD2013.Carnegie Classification 2000',
-    'HD2013.Data Feedback Report comparison group category created by NCES'
-]
-'''
 ATTRIBUTE_STRING_KEYS = [
     ['institution name', 'Name'],
     ['EF2013D.Student-to-faculty ratio', 'Student-to-faculty ratio'],

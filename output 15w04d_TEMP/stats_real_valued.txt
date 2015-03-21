@@ -1,6 +1,0 @@
-Total distances: 64
-Mean distance: 0.297554347826
-Root mean square: 0.343983530401
-Most dissimilar (min): 0.0
-Median distance: 0.391304347826
-Stardard Dev.: 0.172586440015Variance: 0.0297860792769Finished 'calculate_stats.py' in 0.0139999389648 seconds!
