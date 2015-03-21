@@ -7,8 +7,12 @@ from sklearn.neighbors import DistanceMetric
 import settings
 import time
 import csv
+import copy
+import datetime
 
 start_time = time.time()
+print "Started: " + datetime.datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
+
 csvfile = open(settings.PATH + "\\" + settings.TARGET + ".csv")
 reader = csv.DictReader(csvfile)
 
@@ -23,23 +27,20 @@ for row in reader:
     # key = row.pop(name_string_key)  # There exist multiple institutions with the same name but different locations.
 
     # Assign a categorical tuition cost
-    row[settings.ATTRIBUTE_STRING_KEYS[2]] = \
-        settings.numerical_to_categorical(row[settings.ATTRIBUTE_STRING_KEYS[2]], 5000, 11, unit='$', prefix_unit=True)
+    row[settings.ATTRIBUTE_STRING_KEYS[2][0]] = \
+        settings.numerical_to_categorical(row[settings.ATTRIBUTE_STRING_KEYS[2][0]], 5000, 11, unit='$', prefix_unit=True)
 
     # duplicate row handling
     if key in data:
         print "WARNING: duplicate key: " + key
         pass
 
-    data[key] = row
-    '''
+    data[key] = copy.deepcopy(row)
+
     row_attributes = [key]
     for i in xrange(settings.ATTRIBUTE_STRING_KEYS.__len__()):
-        row_attributes.append(row.pop(settings.ATTRIBUTE_STRING_KEYS[i]))
+        row_attributes.append(row.pop(settings.ATTRIBUTE_STRING_KEYS[i][0]))
     attributes.append(row_attributes)
-    '''
-
-print data
 
 print "Number of elements: " + str(data.__len__())
 
@@ -56,7 +57,7 @@ for key, val in data.items():
 w = csv.writer(open(settings.OUTPUT+"\\dict_data_selective_attributes.dat", "w"))
 row_header = [settings.ID_STRING_KEY]
 for i in xrange(settings.ATTRIBUTE_STRING_KEYS.__len__()):
-    row_header.append(settings.ATTRIBUTE_STRING_KEYS[i])
+    row_header.append(settings.ATTRIBUTE_STRING_KEYS[i][0])
 w.writerow(row_header)
 for row in attributes:
     w.writerow(row)
@@ -75,8 +76,6 @@ for val in num_trues:
         raise Exception("Mismatch in number of categories!")
 
 print "Number of categories (denominator): " + str(int(num_categories))
-
-print sparse_matrix
 
 # generate distances
 distance_calculator = DistanceMetric.get_metric(settings.distance)

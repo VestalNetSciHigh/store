@@ -1,0 +1,5 @@
+Threshold: 0.172586440015
+Non-zero distances: 16
+Most dissimilar (min) distance: 0.0
+Number of most dissimilar: 48
+Finished 'set_threshold.py' in 0.0090000629425 seconds!

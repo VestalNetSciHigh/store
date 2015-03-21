@@ -9,10 +9,15 @@ import collections
 
 # path to data directory, target file (csv file, without extension), output directory
 PATH = "..\\data"
-TARGET = "NetSci-Data-15w04d_TEMP"
-OUTPUT = "..\\output"
+TARGET = "NetSci-Data-15w04f"
+OUTPUT = "..\\output " + TARGET[12:]
+
+NUM_STANDARD_DEVIATIONS = 2  # Set the SD offset for the threshold
+
+THRESHOLD_MAKE_BINARY = False  # set distances above THRESHOLD to 1
 
 ID_STRING_KEY = "unitid"
+'''
 ATTRIBUTE_STRING_KEYS = [
     'institution name',
     'EF2013D.Student-to-faculty ratio',
@@ -62,7 +67,6 @@ ATTRIBUTE_STRING_KEYS = [
     ['HD2013.Carnegie Classification 2000', 'Carnegie Classification 2000'],
     ['HD2013.Data Feedback Report comparison group category created by NCES', 'Data Feedback Report comparison group category created by NCES'],
 ]
-'''
 
 
 if not os.path.exists(OUTPUT):
@@ -170,7 +174,7 @@ def distance(array_one, array_two):
     for i in xrange(array_one.__len__()):
         if (array_one[i] == 1) and (array_two[i] == 1):
             ntt += 1
-    return float(ntt) / num_categories
+    return 1 - (float(ntt) / num_categories)
 
 
 def skip(iterable, at_start=0, at_end=0):

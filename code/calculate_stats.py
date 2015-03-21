@@ -6,8 +6,10 @@ import time
 # from numpy import loadtxt
 import numpy
 import settings
+import datetime
 
 start_time = time.time()
+print "Started: " + datetime.datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
 output_string = ""
 
 # load output from parseCSV
@@ -24,6 +26,7 @@ output_string += "Total distances: " + str(ordered_distances.__len__()) + "\n"
 # compute mean distance
 mean_distance = sum(ordered_distances) / ordered_distances.__len__()
 output_string += "Mean distance: " + str(mean_distance) + "\n"
+settings.output(str(mean_distance), "mean_distance", ext=".dat", mode="write")
 
 # compute root mean square
 sum_squares = 0
@@ -49,6 +52,8 @@ output_string += "Median distance: " + str(median_distance) + "\n"
 
 # other stats
 std = numpy.std(ordered_distances)
+settings.output(str(std), "standard_deviation", ext=".dat", mode="write")
+
 var = numpy.var(ordered_distances)
 output_string += "Stardard Dev.: " + str(std)
 output_string += "Variance: " + str(var)
