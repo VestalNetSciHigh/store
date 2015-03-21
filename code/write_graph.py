@@ -22,25 +22,19 @@ G = nx.from_numpy_matrix(distances)
 
 # Add node data tags / attributes
 fieldnames = csv_reader.fieldnames
-counter = 0
 for row in csv_reader:
     if row == "":
         pass
-    G.node[counter]["Label"] = row[settings.NAME_STRING_KEY]
-    counter += 1
+    for tag in fieldnames[1:]:
+        G.node[int(row[fieldnames[0]])][tag] = row[tag]
 # print G.nodes(data=True)
 
 # Add edge data, change color of edges above the average weight
 
-output_string += str(G.edges()) + "\n"
+# output_string += str(G.edges()) + "\n"
 nx.write_graphml(G, settings.OUTPUT+"\\graph.graphml")
 
 total_seconds = time.time() - start_time
 output_string += "Finished 'write_graph.py' in " + str(total_seconds) + " seconds!"
 settings.output(output_string, "graph_generation", mode="write")
 print "Finished 'write_graph.py' in " + str(total_seconds) + " seconds!"
-
-# Traceback (most recent call last):
-#   File "write_graph.py", line 29, in <module>
-#     G.node[int(row[fieldnames[0]])][tag] = row[tag]
-# KeyError: 103945

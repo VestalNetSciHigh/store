@@ -9,13 +9,64 @@ import collections
 
 # path to data directory, target file (csv file, without extension), output directory
 PATH = "..\\data"
-# TARGET = "NetSci-Data-15w04f"
-TARGET = "NetSci-Data-15w04f"
+TARGET = "NetSci-Data-15w04d_TEMP"
 OUTPUT = "..\\output"
 
 ID_STRING_KEY = "unitid"
-NAME_STRING_KEY = 'institution name'
-TUITION_KEY = 'DRVIC2013.Tuition and fees, 2013-14'  # to be converted: numerical to categorical
+ATTRIBUTE_STRING_KEYS = [
+    'institution name',
+    'EF2013D.Student-to-faculty ratio',
+    'DRVIC2013.Tuition and fees, 2013-14',
+    'HD2013.Institution size category',
+    'HD2013.FIPS state code',
+    'HD2013.Geographic region',
+    'HD2013.Level of institution',
+    'HD2013.Control of institution',
+    'HD2013.Degree-granting status',
+    'HD2013.Historically Black College or University',
+    'HD2013.Tribal college',
+    'HD2013.Degree of urbanization (Urban-centric locale)',
+    'HD2013.Institutional category',
+    'HD2013.Carnegie Classification 2010: Basic',
+    'HD2013.Carnegie Classification 2010: Undergraduate Instructional Program',
+    'HD2013.Carnegie Classification 2010: Graduate Instructional Program',
+    'HD2013.Carnegie Classification 2010: Undergraduate Profile',
+    'HD2013.Carnegie Classification 2010: Enrollment Profile',
+    'HD2013.Carnegie Classification 2010: Size and Setting',
+    'HD2013.Land Grant Institution',
+    'HD2013.Carnegie Classification 2000',
+    'HD2013.Data Feedback Report comparison group category created by NCES'
+]
+'''
+ATTRIBUTE_STRING_KEYS = [
+    ['institution name', 'Name'],
+    ['EF2013D.Student-to-faculty ratio', 'Student-to-faculty ratio'],
+    ['DRVIC2013.Tuition and fees, 2013-14', 'Cost'],
+    ['HD2013.Institution size category', 'Institution Size'],
+    ['HD2013.FIPS state code', 'State'],
+    ['HD2013.Geographic region', 'Geographic Region'],
+    ['HD2013.Level of institution', 'Level of Institution'],
+    ['HD2013.Control of institution', 'Control of Institution'],
+    ['HD2013.Degree-granting status', 'Degree-granting Status'],
+    ['HD2013.Historically Black College or University', 'Historically Black College or University'],
+    ['HD2013.Tribal college', 'Tribal college'],
+    ['HD2013.Degree of urbanization (Urban-centric locale)', 'Degree of urbanization (Urban-centric locale)'],
+    ['HD2013.Institutional category', 'Institutional category'],
+    ['HD2013.Carnegie Classification 2010: Basic', 'Carnegie Classification 2010: Basic'],
+    ['HD2013.Carnegie Classification 2010: Undergraduate Instructional Program', 'Carnegie Classification 2010: Undergraduate Instructional Program'],
+    ['HD2013.Carnegie Classification 2010: Graduate Instructional Program', 'Carnegie Classification 2010: Graduate Instructional Program'],
+    ['HD2013.Carnegie Classification 2010: Undergraduate Profile', 'Carnegie Classification 2010: Undergraduate Profile'],
+    ['HD2013.Carnegie Classification 2010: Enrollment Profile', 'Carnegie Classification 2010: Enrollment Profile'],
+    ['HD2013.Carnegie Classification 2010: Size and Setting', 'Carnegie Classification 2010: Size and Setting'],
+    ['HD2013.Land Grant Institution', 'Land Grant Institution'],
+    ['HD2013.Carnegie Classification 2000', 'Carnegie Classification 2000'],
+    ['HD2013.Data Feedback Report comparison group category created by NCES', 'Data Feedback Report comparison group category created by NCES'],
+]
+'''
+
+
+if not os.path.exists(OUTPUT):
+        os.makedirs(os.path.abspath(OUTPUT))
 
 
 def output(content, filename=TARGET, ext=".txt", mode="print", charlimit=0, print_in_console=False, overwrite=True):

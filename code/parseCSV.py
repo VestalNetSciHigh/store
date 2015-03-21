@@ -15,6 +15,7 @@ reader = csv.DictReader(csvfile)
 # CSV to dict
 data = {}
 names = []
+attributes = []
 for row in reader:
     key = row.pop(settings.ID_STRING_KEY)
     if key == '':
@@ -22,8 +23,8 @@ for row in reader:
     # key = row.pop(name_string_key)  # There exist multiple institutions with the same name but different locations.
 
     # Assign a categorical tuition cost
-    row[settings.TUITION_KEY] = \
-        settings.numerical_to_categorical(row[settings.TUITION_KEY], 5000, 11, unit='$', prefix_unit=True)
+    row[settings.ATTRIBUTE_STRING_KEYS[2]] = \
+        settings.numerical_to_categorical(row[settings.ATTRIBUTE_STRING_KEYS[2]], 5000, 11, unit='$', prefix_unit=True)
 
     # duplicate row handling
     if key in data:
@@ -31,28 +32,34 @@ for row in reader:
         pass
 
     data[key] = row
-    names.append(row.pop(settings.NAME_STRING_KEY))
+    '''
+    row_attributes = [key]
+    for i in xrange(settings.ATTRIBUTE_STRING_KEYS.__len__()):
+        row_attributes.append(row.pop(settings.ATTRIBUTE_STRING_KEYS[i]))
+    attributes.append(row_attributes)
+    '''
+
+print data
 
 print "Number of elements: " + str(data.__len__())
 
+'''
 # save reordered dict as a new .csv (only two columns)
 w = csv.writer(open(settings.OUTPUT+"\\dict_data.dat", "w"))
-w.writerow([settings.ID_STRING_KEY, data.keys()])
-data
-for key, vals in data.items():
-    line = []
-    line.append(key)
-    line.extend(vals.values())
-    w.writerow(line)
+w.writerow([settings.ID_STRING_KEY, 'val'])
+for key, val in data.items():
+    w.writerow([key, val])
+'''
 
 # extract unitid from reordered dict (order was not preserved)
-r = csv.DictReader(open(settings.OUTPUT+"\\dict_data.dat"))
+# r = csv.DictReader(open(settings.OUTPUT+"\\dict_data.dat"))
 w = csv.writer(open(settings.OUTPUT+"\\dict_data_selective_attributes.dat", "w"))
-w.writerow([settings.ID_STRING_KEY, settings.NAME_STRING_KEY])
-count = 0
-for row in r:
-    w.writerow([row.pop(settings.ID_STRING_KEY), names[count]])
-    count += 1
+row_header = [settings.ID_STRING_KEY]
+for i in xrange(settings.ATTRIBUTE_STRING_KEYS.__len__()):
+    row_header.append(settings.ATTRIBUTE_STRING_KEYS[i])
+w.writerow(row_header)
+for row in attributes:
+    w.writerow(row)
 
 # dict to "one-hot" format (order assumed to be preserved)
 vec = DictVectorizer()
@@ -68,6 +75,8 @@ for val in num_trues:
         raise Exception("Mismatch in number of categories!")
 
 print "Number of categories (denominator): " + str(int(num_categories))
+
+print sparse_matrix
 
 # generate distances
 distance_calculator = DistanceMetric.get_metric(settings.distance)
