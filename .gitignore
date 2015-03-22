@@ -1,6 +1,6 @@
 # NetSci High custom
 .idea
-output 15w04f/
+output/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -12,7 +12,7 @@ PATH = "..\\data"
 TARGET = "NetSci-Data-15w04f"
 OUTPUT = "..\\output\\" + TARGET[12:]
 
-NUM_STANDARD_DEVIATIONS = 2  # Set the SD offset for the threshold
+NUM_STANDARD_DEVIATIONS = 1  # Set the SD offset for the threshold
 
 THRESHOLD_MAKE_BINARY = False  # set distances above THRESHOLD to 1
 
