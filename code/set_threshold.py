@@ -30,7 +30,7 @@ if os.path.exists(settings.OUTPUT+"\\"+"mean_distance.dat"):
 
 standard_deviation = 0
 if os.path.exists(settings.OUTPUT+"\\"+"standard_deviation.dat"):
-    average = loadtxt(settings.OUTPUT+"\\standard_deviation.dat")
+    standard_deviation = loadtxt(settings.OUTPUT+"\\standard_deviation.dat")
 
 threshold = average - (standard_deviation * settings.NUM_STANDARD_DEVIATIONS)
 
@@ -38,11 +38,11 @@ threshold = average - (standard_deviation * settings.NUM_STANDARD_DEVIATIONS)
 output_string += "Threshold: " + str(threshold) + "\n"
 for i in xrange(distances.__len__()):
     for j in xrange(distances[0].__len__()):
-        distances[i][j] = 1 - distances[i][j]
-        if distances[i][j] < threshold:
-            distances[i][j] = 0
+        if distances[i][j] > threshold:
+            distances[i][j] = 1
         elif settings.THRESHOLD_MAKE_BINARY:
             distances[i][j] = 1
+        distances[i][j] = 1 - distances[i][j]
 
 count_nonzero = 0
 count_most_dissimilar = 0
