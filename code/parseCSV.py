@@ -17,7 +17,7 @@ csvfile = open(settings.PATH + "\\" + settings.TARGET + ".csv")
 reader = csv.DictReader(csvfile)
 
 # CSV to dict
-data = {}
+data = []
 names = []
 attributes = []
 for row in reader:
@@ -35,7 +35,7 @@ for row in reader:
         print "WARNING: duplicate key: " + key
         pass
 
-    data[key] = copy.deepcopy(row)
+    data.append(copy.deepcopy(row))
 
     row_attributes = [key]
     for i in xrange(settings.ATTRIBUTE_STRING_KEYS.__len__()):
@@ -64,7 +64,7 @@ for row in attributes:
 
 # dict to "one-hot" format (order assumed to be preserved)
 vec = DictVectorizer()
-sparse_matrix = vec.fit_transform(data.itervalues()).toarray()
+sparse_matrix = vec.fit_transform(data).toarray()
 
 # insure same number of categories in each row
 num_trues = []
